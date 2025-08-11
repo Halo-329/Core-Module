@@ -2,7 +2,7 @@
 
 
 # ⚙️ Codebase Extraction
-기존 쇼핑몰 프로젝트를 모듈 추출(Module Extraction) 과정을 거쳐 범용 코어 모듈로 전환
+범용 코어 모듈
 
 ## 📦 모듈 소개
 
