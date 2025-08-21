@@ -97,9 +97,20 @@ a:visited {
 }
 
 .dropdown-item {
-  display: flex; align-items: center; gap: 8px;
-  padding: 10px 14px; color: #333; text-decoration: none; font-size: 15px;
+   display: block;          /* 블록 전체 클릭 가능 */
+  width: 100%;             /* 전체 폭 차지 */
+  padding: 10px 14px;
+  font-size: 15px;
+  color: #333;
+  text-align: left;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+
 }
 
-.dropdown-item:hover { background: #f8f9fa; color: #007BFF; }
+.dropdown-item:hover {
+  background: #f8f9fa;
+  color: #007BFF;}
 

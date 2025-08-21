@@ -1,4 +1,3 @@
-<link rel="stylesheet" href="/css/main.css">
 <link rel="stylesheet" href="/css/layout/nav.css">
 
 <div class="nav" th:fragment="navbar">
@@ -11,21 +10,22 @@
     <div class="nav-right">
   <a sec:authorize="!isAuthenticated()" href="/member/login">MyPage</a>
 
-  <a sec:authorize="isAuthenticated()" href="/member/my-page">MyPage</a>
-  <a sec:authorize="isAuthenticated()" href="/cart">Cart</a>
 
   <!-- ▼ 드롭다운 트리거 -->
   <div sec:authorize="isAuthenticated()" class="dropdown">
     <button class="dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">
-      test
+      아바타
     </button>
 
     <!-- ▼ 드롭다운 메뉴 -->
     <div class="dropdown-menu" role="menu" aria-hidden="true">
-      <div class="dropdown-header">내 계정</div>
-      <a class="dropdown-item" href="/member/profile">프로필</a>
-      <a class="dropdown-item" href="/member/account">계정 관리</a>
-      <a class="dropdown-item" href="/member/my-page">마이페이지</a>
+        <div class="dropdown-header">내 계정</div>
+        <a class="dropdown-item" href="/member/profile">프로필</a>
+        <a class="dropdown-item" href="/member/my-page">마이페이지</a>
+        <form action="/member/logout/jwt" method="post">
+            <button type="submit" class="dropdown-item">로그아웃</button>
+        </form>
+
     </div>
   </div>
 </div>
