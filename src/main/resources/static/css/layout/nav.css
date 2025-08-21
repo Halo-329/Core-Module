@@ -74,3 +74,32 @@ a:visited {
   color: #007BFF;
 }
 
+
+/* ▼ 드롭다운 */
+.dropdown { position: relative; }
+
+.dropdown-trigger {
+  background: none; border: 0; font: inherit; color: #333; cursor: pointer;
+  display: flex; align-items: center; padding: 0;
+}
+
+.dropdown-menu {
+  position: absolute; top: calc(100% + 10px); right: 0;
+  min-width: 220px; background: #fff; border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.12); padding: 8px 0; z-index: 1000;
+  display: none;
+}
+
+.dropdown-menu.open { display: block; }
+
+.dropdown-header {
+  font-weight: 700; padding: 10px 14px; color: #111; border-bottom: 1px solid #f1f3f5;
+}
+
+.dropdown-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 14px; color: #333; text-decoration: none; font-size: 15px;
+}
+
+.dropdown-item:hover { background: #f8f9fa; color: #007BFF; }
+
