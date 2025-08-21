@@ -113,7 +113,7 @@ public class MemberController {
 
 
     // 3. 마이페이지
-    @GetMapping("/my-page")
+    @GetMapping("/profile")
     String me(Authentication auth, Model model) {
         String id = auth.getName();
         Optional<Member> opt = memberRepo.findFirstByLoginId(id);
@@ -121,13 +121,13 @@ public class MemberController {
 
         if (opt.isPresent()) {
             model.addAttribute("member", opt.get());
-            return ViewPath.MEMBER_MY_PAGE;
+            return ViewPath.MEMBER_PROFILE;
         }
 
         return "member/login";
     }
 
-    @GetMapping("/my-page/jwt")
+    @GetMapping("/profile/jwt")
     @ResponseBody
     String meByJwt(Authentication auth){
 
@@ -144,7 +144,7 @@ public class MemberController {
         if (auth==null || auth.isAuthenticated()) {
             return ViewPath.REDIRECT_ITEM_LIST;
         }
-        return ViewPath.MEMBER_MY_PAGE;
+        return ViewPath.MEMBER_PROFILE;
     }
 
 

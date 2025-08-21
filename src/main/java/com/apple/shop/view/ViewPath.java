@@ -40,7 +40,7 @@ public class ViewPath {
 
     // login
     public static final String MEMBER_LOGIN = MEMBER_PATH + "login";
-    public static final String MEMBER_MY_PAGE = MEMBER_PATH + "my-page";
+    public static final String MEMBER_PROFILE = MEMBER_PATH + "profile";
     public static final String MEMBER_SIGNUP = MEMBER_PATH + "signup";
 
     // salse
