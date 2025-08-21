@@ -3,25 +3,33 @@
 
 <div class="nav" th:fragment="navbar">
     <div class="nav-left">
-        <a class="logo" href="/item/list/page/1">Shopping Mall</a>
+        <a class="logo" href="/item/list/page/1">Your Space</a>
         <a sec:authorize="isAuthenticated()">
             <a href="/item/write">Write</a>
         </a>
     </div>
     <div class="nav-right">
-        <a sec:authorize="!isAuthenticated()">
-            <a href="/member/login">MyPage</a>
-        </a>
+  <a sec:authorize="!isAuthenticated()" href="/member/login">MyPage</a>
 
-        <a sec:authorize="isAuthenticated()">
-            <a href="/member/my-page">MyPage</a>
-            <a href="/cart">Cart</a>
+  <a sec:authorize="isAuthenticated()" href="/member/my-page">MyPage</a>
+  <a sec:authorize="isAuthenticated()" href="/cart">Cart</a>
 
-        </a>
+  <!-- ▼ 드롭다운 트리거 -->
+  <div sec:authorize="isAuthenticated()" class="dropdown">
+    <button class="dropdown-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+      test
+    </button>
 
-
-
+    <!-- ▼ 드롭다운 메뉴 -->
+    <div class="dropdown-menu" role="menu" aria-hidden="true">
+      <div class="dropdown-header">내 계정</div>
+      <a class="dropdown-item" href="/member/profile">프로필</a>
+      <a class="dropdown-item" href="/member/account">계정 관리</a>
+      <a class="dropdown-item" href="/member/my-page">마이페이지</a>
     </div>
+  </div>
+</div>
 
 
+    <script defer src="/js/layout/nav.js"></script>
 </div>

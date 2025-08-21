@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } else {
                 alert("삭제에 실패했습니다.");
             }
-        });
+        }); 
     });
 
     // ───────── 수량 조절 기능 ─────────
