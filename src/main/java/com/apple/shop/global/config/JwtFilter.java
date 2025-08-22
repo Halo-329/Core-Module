@@ -2,6 +2,8 @@ package com.apple.shop.global.config;
 
 import com.apple.shop.domain.member.service.MyUserDetailsService.CustomUser;
 import com.apple.shop.global.util.JwtUtil;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -21,61 +23,73 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(
-            HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain
+            HttpServletRequest request, HttpServletResponse response, FilterChain filterChain
     ) throws ServletException, IOException {
 
-        // 쿠키 가져오기
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
+        Cookie jwtCookie = findCookie(request, "jwt");
+        if (jwtCookie == null || isAuthenticatedAlready()) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // jwt 쿠키 찾기
-        Cookie jwtCookie = null;
-        for (Cookie c : cookies) {
-            if ("jwt".equals(c.getName())) {
-                jwtCookie = c;
-                break;
-            }
-        }
-
-        // jwt 쿠키가 없다면 다음 필터로 진행
-        if (jwtCookie == null) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        // JWT 검증
-        Claims claim;
         try {
-            claim = JwtUtil.extractToken(jwtCookie.getValue());
-        } catch (Exception e) {
-            System.out.println("(Error) " + e.getMessage());
+            // 1) 파싱/검증
+            Claims claim = JwtUtil.extractToken(jwtCookie.getValue());
+
+            // 2) 인증 세팅
+            String[] arr = claim.get("authorities").toString().split(",");
+            var authorities = Arrays.stream(arr).map(SimpleGrantedAuthority::new).toList();
+
+            String username = String.valueOf(claim.get("username"));
+            CustomUser principal = new CustomUser(username, "", authorities);
+            principal.displayName = String.valueOf(claim.get("displayName"));
+
+            var authToken = new UsernamePasswordAuthenticationToken(principal, null, authorities);
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            SecurityContextHolder.getContext().setAuthentication(authToken);
+
             filterChain.doFilter(request, response);
-            return;
+        } catch (ExpiredJwtException e) {
+            // 만료 토큰: 쿠키 제거
+            clearJwtCookie(response);
+            // API 경로면 401, 뷰/정적은 계속 통과
+            if (isApi(request)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+            filterChain.doFilter(request, response);
+        } catch (JwtException | IllegalArgumentException e) {
+            // 서명 불일치/손상 등: 쿠키 제거 후 동일 처리
+            clearJwtCookie(response);
+            if (isApi(request)) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
+            filterChain.doFilter(request, response);
         }
+    }
 
-        // 사용자 권한 세팅
-        String[] arr = claim.get("authorities").toString().split(",");
-        var authorities = Arrays.stream(arr)
-                .map(SimpleGrantedAuthority::new)
-                .toList();
+    private boolean isAuthenticatedAlready() {
+        return SecurityContextHolder.getContext().getAuthentication() != null;
+    }
 
-        String username = claim.get("username").toString();
-        CustomUser customUser = new CustomUser(username, "", authorities);
-        customUser.displayName = claim.get("displayName").toString();
+    private boolean isApi(HttpServletRequest req) {
+        String uri = req.getRequestURI();
+        return uri != null && uri.startsWith("/api/");
+    }
 
-        // Spring Security 인증 객체 설정
-        var authToken = new UsernamePasswordAuthenticationToken(
-                customUser, "", authorities
-        );
-        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+    private Cookie findCookie(HttpServletRequest request, String name) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) return null;
+        for (Cookie c : cookies) if (name.equals(c.getName())) return c;
+        return null;
+    }
 
-        // 다음 필터 실행
-        filterChain.doFilter(request, response);
+    private void clearJwtCookie(HttpServletResponse res) {
+        Cookie c = new Cookie("jwt", null);
+        c.setPath("/");
+        c.setMaxAge(0);
+        c.setHttpOnly(true);
+        res.addCookie(c);
     }
 }

@@ -19,7 +19,6 @@
 
   trigger.addEventListener('click', (e) => {
     e.stopPropagation();
-    console.log("버튼눌림");
     menu.classList.contains('open') ? closeMenu() : openMenu();
   });
 

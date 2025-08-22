@@ -1,105 +1,106 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;800&display=swap');
 
-/* 네비게이션 바 전체 */
-.nav {
-  display: flex;
-  align-items: center;
-  padding: 16px 32px;
-  margin-top: 16px;
-  margin-bottom: 16px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+/* ===== Nav ===== */
+.nav{
+  position:relative; /* 메가메뉴 위치 기준 */
+  display:flex; align-items:center; gap:16px;
+  padding:16px 32px; margin:16px 0; background:#fff;
+  border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,.05);
+  overflow:visible; z-index:3000;
+}
+.nav-left,.nav-right{display:flex; align-items:center; gap:16px;}
+.nav-right{margin-left:auto;}
+.nav .logo{
+  font:800 20px/1 Montserrat,system-ui; color:#111;
+  display:flex; align-items:center;
+}
+.nav a{
+  display:flex; align-items:center;
+  font:500 16px/1.2 Montserrat,system-ui; letter-spacing:-.5px;
+  color:#333; text-decoration:none; transition:color .2s;
+}
+.nav a:hover{color:#007BFF;}
+
+/* ===== Dropdown (오른쪽 아바타 등) ===== */
+.dropdown{position:relative;}
+.dropdown-trigger{
+  background:none; border:0; font:inherit; color:#333; cursor:pointer;
+  display:flex; align-items:center; padding:0;
+}
+.dropdown-menu{
+  position:absolute; top:calc(100% + 10px); right:0; z-index:3500;
+  display:none; min-width:220px; padding:8px 0; background:#fff; border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,.12);
+}
+.dropdown-menu.open{display:block;}
+.dropdown-header{
+  padding:10px 14px; font-weight:700; color:#111; border-bottom:1px solid #f1f3f5;
+}
+.dropdown-item{
+  display:block; width:100%; padding:10px 14px; text-align:left;
+  font-size:15px; color:#333; text-decoration:none;
+  background:none; border:0; cursor:pointer; border-radius:8px;
+}
+.dropdown-item:hover{background:#f8f9fa; color:#007BFF;}
+.dropdown-item:focus-visible{outline:2px solid #007BFF; outline-offset:2px;}
+
+/* ===== Mega Menu (천체 / 자유게시판) ===== */
+:root{ --mega-width: 720px; }  /* 원하는 폭으로 조절 */
+
+.mega{
+  position:relative;           /* 패널 기준 컨테이너 */
+  display:flex; gap:16px; align-items:center; z-index:3200;
+}
+.mega-trigger{
+  display:flex; align-items:center;
+  font:500 16px/1.2 Montserrat,system-ui;
+  color:#333; text-decoration:none; cursor:pointer;
+}
+.mega-trigger:hover{ color:#007BFF; }
+
+/* 패널: 트리거 바로 아래 '왼쪽 정렬' + 폭 고정/클램프 */
+.mega-panel{
+  position:absolute; left:0; top:100%;
+  transform:translateY(12px);                 /* 시각적 간격 */
+  width:var(--mega-width); max-width:90vw;    /* 부모폭 영향 제거 */
+  padding:24px 28px; background:#fff; border:1px solid #e9eef5;
+  border-radius:16px; box-shadow:0 12px 40px rgba(16,24,40,.12);
+  display:none; z-index:4000;
+
+  /* 레이아웃 */
 }
 
-/* 좌우 섹션 */
-.nav-left,
-.nav-right {
-  display: flex;
-  gap: 16px;
-  align-items: center; /* ✅ 수직 정렬 */
+/* 트리거 또는 패널 위에 있을 때만 열림 → 패널 밖으로 나가면 닫힘 */
+.mega:hover .mega-panel,
+.mega:focus-within .mega-panel {
+  display: grid;
+  grid-template-columns:repeat(2, minmax(180px, 1fr));
+  gap: 24px;
 }
 
-/* 오른쪽 요소를 오른쪽 끝으로 밀기 */
-.nav-right {
-  margin-left: auto;
+/* 트리거-패널 사이 hover 끊김 방지(12px 간격용 투명 브리지) */
+.mega::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  height: 12px;
 }
 
-/* 로고 스타일 */
-.nav .logo {
-  font-weight: 800;
-  font-size: 20px;
-  color: #111;
-  display: flex;
-  align-items: center; /* ✅ 수직 정렬 */
+/* 패널 내부 스타일 */
+.mega-col{ padding:0 8px; }
+.mega-col + .mega-col{ border-left:1px solid #eef2f6; padding-left:24px; }
+.mega-col h4{
+  margin:0 0 14px; font-weight:800; font-size:18px; color:#0f172a;
 }
-
-/* 링크 스타일 */
-.nav a {
-  text-decoration: none;
-  font-weight: 500;
-  letter-spacing: -0.5px;
-  color: #333;
-  transition: color 0.2s ease;
-  font-size: 16px;
-  display: flex;
-  align-items: center; /* ✅ 수직 정렬 */
+.mega-link{
+  display:block; padding:10px 6px;
+  color:#111827; text-decoration:none; border-radius:8px;
 }
+.mega-link:hover{ background:#f4f7fb; color:#0a58ff; padding-left:10px; }
 
-/* 호버 효과 */
-.nav a:hover {
-  color: #007BFF;
+/* ===== Reduce Motion ===== */
+@media (prefers-reduced-motion: reduce){
+  .nav a, .dropdown-item, .mega-link{transition:none;}
 }
-
-/* 방문한 링크 스타일 유지 */
-a:visited {
-  color: inherit;
-  text-decoration: none;
-}
-
-.logout-link {
-  background: none;
-  border: none;
-  color: #333;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 0;
-  margin: 0;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.logout-link:hover {
-  color: #007BFF;
-}
-
-
-/* ▼ 드롭다운 */
-.dropdown { position: relative; }
-
-.dropdown-trigger {
-  background: none; border: 0; font: inherit; color: #333; cursor: pointer;
-  display: flex; align-items: center; padding: 0;
-}
-
-.dropdown-menu {
-  position: absolute; top: calc(100% + 10px); right: 0;
-  min-width: 220px; background: #fff; border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0,0,0,.12); padding: 8px 0; z-index: 1000;
-  display: none;
-}
-
-.dropdown-menu.open { display: block; }
-
-.dropdown-header {
-  font-weight: 700; padding: 10px 14px; color: #111; border-bottom: 1px solid #f1f3f5;
-}
-
-.dropdown-item {
-  display: flex; align-items: center; gap: 8px;
-  padding: 10px 14px; color: #333; text-decoration: none; font-size: 15px;
-}
-
-.dropdown-item:hover { background: #f8f9fa; color: #007BFF; }
-

@@ -6,7 +6,6 @@ import com.apple.shop.domain.comment.repo.CommentRepo;
 import com.apple.shop.domain.item.service.ItemService;
 import com.apple.shop.domain.item.entity.Item;
 import com.apple.shop.domain.item.service.S3Service;
-import com.apple.shop.domain.sales.service.SalesService;
 import com.apple.shop.domain.member.service.MyUserDetailsService;
 import com.apple.shop.view.ViewPath;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,6 @@ public class ItemController {
     private final S3Service s3Service;
     private final CommentService commentService;
     private final CommentRepo commentRepo;
-    private final SalesService salesService;
 
 
     // 0. 초기 페이지
